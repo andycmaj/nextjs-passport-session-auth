@@ -50,7 +50,9 @@ This example demonstrates using [passport](http://www.passportjs.org/) in [NextJ
 
 Takes example of the fact that Next's micro-based API routes are compatible with connect-style middleware, with a little work.
 
+Most of the meat of the example is in how we [configure passport to work as NextJS middleware](https://github.com/andycmaj/nextjs-passport-session-auth/blob/06b615d44d9b77c781567bce17fe7b91ee4d5556/lib/withPassport.ts#L51).
+
 ## TODO
 
-[ ] add CRSF mitigation
-[ ] add JWT session token
+- [ ] add CRSF mitigation
+- [ ] add JWT session token
