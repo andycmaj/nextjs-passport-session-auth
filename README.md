@@ -1,4 +1,4 @@
-# Overmind example
+# Passport session auth example
 
 ## How to use
 
