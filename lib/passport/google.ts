@@ -1,4 +1,4 @@
-import { Strategy, Profile } from 'passport-github'
+import { Strategy, Profile } from 'passport-google-oauth20'
 import appConfig from '../appConfig'
 import passport from 'passport'
 
@@ -9,11 +9,11 @@ import passport from 'passport'
 // behalf, along with the user's profile.  The function must invoke `cb`
 // with a user object, which will be exposed in the request as `req.user`
 // in api handlers after authentication.
-
+console.log(appConfig.getCredentialsForOAuthProvider('google'))
 const strategy = new Strategy({
-    ...appConfig.getCredentialsForOAuthProvider('github'),
-    callbackURL: appConfig.getOAuthCallbackUrl('github'),
-    scope: 'user:email',
+    ...appConfig.getCredentialsForOAuthProvider('google'),
+    callbackURL: appConfig.getOAuthCallbackUrl('google'),
+    scope: ['profile'],
     passReqToCallback: false
   }, 
   (accessToken, refreshToken, githubProfile, cb) => {

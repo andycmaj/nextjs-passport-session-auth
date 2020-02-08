@@ -6,6 +6,9 @@ const Login = () => (
     <p>
       <a href="/api/auth/github">Sign in with github</a>
     </p>
+    <p>
+      <a href="/api/auth/google">Sign in with google</a>
+    </p>
   </main>
 )
 

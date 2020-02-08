@@ -1,32 +1,40 @@
-import { StrategyOptions } from 'passport-github'
+const {URL} = require('url')
 
 export interface AppConfig {
   isDevelopment: boolean
   hostingURL: string
-  github: StrategyOptions
+
+  getCredentialsForOAuthProvider(provider: string): {
+    provider: string,
+    clientID: string,
+    clientSecret: string
+  }
+  getOAuthCallbackUrl(provider: string, host?: string): string 
 }
-
-const getOAuthUrls: (
-  hostName: string,
-  app: string
-) => { callbackURL: string } = (hostName: string, app: string) => ({
-  // Alternatively, use `[app].ts` filenames for paramaterized urls
-  callbackURL: `${hostName}/api/auth/callback/${app}`,
-})
-
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const hostingURL = process.env.HOSTING_URL || 'http://localhost:3000'
 
+const getOAuthCallbackUrl = (provider:string, host?: string) => {
+  host = host || hostingURL
+  const callbackUrl = new URL(`/api/auth/callback/${provider}`, host)
+  return callbackUrl.toString()
+}
+
+const getCredentialsForOAuthProvider = ( provider:string ) => {
+  const prefix = provider.toUpperCase() + '_'
+  const clientID = process.env[prefix + 'CLIENTID']
+  const clientSecret = process.env[prefix + 'CLIENTSECRET']
+  if(!clientID) throw new Error(`${prefix}CLIENTID was set in environment variables.`)
+  if(!clientSecret) throw new Error(`${prefix}CLIENTSECRET was set in environment variables.`)
+  return { provider, clientID, clientSecret }
+}
 const appConfig: AppConfig = {
   isDevelopment,
   hostingURL,
-  github: {
-    passReqToCallback: false,
-    clientID: process.env.GITHUB_CLIENTID as string,
-    clientSecret: process.env.GITHUB_CLIENTSECRET as string,
-    ...getOAuthUrls(hostingURL, 'github'),
-    scope: 'user:email',
-  },
+  getCredentialsForOAuthProvider,
+  getOAuthCallbackUrl
 }
+ 
 
+console.log(appConfig)
 export default appConfig
