@@ -9,6 +9,20 @@ export { default as passport } from 'passport'
 passport.use(github)
 passport.use(google)
 
+// Configure Passport authenticated session persistence.
+
+passport.serializeUser(function(user: {id:string}, done){
+  done(null, user.id)
+})
+
+passport.deserializeUser(async function(userId, done){
+  if (!userId) {
+    return done(new Error(`User not found: ${userId}`))
+  }
+  done(null, )
+})
+
+
 export interface PassportSession {
   passport: { user: UserIdentity }
 }
