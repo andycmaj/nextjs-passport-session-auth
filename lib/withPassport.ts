@@ -45,21 +45,30 @@ export default fn => (req, res) => {
     // as it is in express. https://expressjs.com/en/api.html#res.redirect
     res.redirect = (location: string) => redirect(res, 302, location);
   }
-
+  passport.initialize()(req, res, () =>
+    passport.session()(req, res, () =>
+      // call wrapped api route as innermost handler
+      fn(req, res)
+    )
+  );
   // Initialize Passport and restore authentication state, if any, from the
   // session. This nesting of middleware handlers basically does what app.use(passport.initialize())
   // does in express.
-  cookieSession({
-    name: "passportSession",
-    signed: false,
-    domain: url.parse(req.url).host,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  })(req, res, () =>
-    passport.initialize()(req, res, () =>
-      passport.session()(req, res, () =>
-        // call wrapped api route as innermost handler
-        fn(req, res)
-      )
-    )
-  );
+  //
+
+  // since we are using JWT, cookieSession isn't needed.
+
+  // cookieSession({
+  //   name: "passportSession",
+  //   signed: false,
+  //   domain: url.parse(req.url).host,
+  //   maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  // })(req, res, () =>
+  //   passport.initialize()(req, res, () =>
+  //     passport.session()(req, res, () =>
+  //       // call wrapped api route as innermost handler
+  //       fn(req, res)
+  //     )
+  //   )
+  // );
 };
