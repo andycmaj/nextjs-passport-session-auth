@@ -2,7 +2,7 @@ import passport from "passport";
 import cookieSession from "cookie-session";
 import url from "url";
 import redirect from "micro-redirect";
-import { github, google } from "./passport";
+import { github, google, jwt } from "./passport";
 import { UserIdentity } from "./withIdentity";
 export { default as passport } from "passport";
 

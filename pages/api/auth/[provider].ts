@@ -7,7 +7,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     return { statusCode: 404 };
   }
 
-  passport.authenticate(provider)(req, res, (...args) => {
+  passport.authenticate(provider, { session: false })(req, res, (...args) => {
     console.log("passport authenticated", args);
   });
 };

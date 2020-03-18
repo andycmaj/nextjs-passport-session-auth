@@ -3,7 +3,13 @@ import { URL } from "url";
 export interface AppConfig {
   isDevelopment: boolean;
   hostingURL: string;
-
+  getJwtConfig(): {
+    keyOpts: {
+      issuer?: string;
+      audience?: string;
+    };
+    secretOrKey: string | Buffer;
+  };
   getCredentialsForOAuthProvider(
     provider: string
   ): {
@@ -15,6 +21,8 @@ export interface AppConfig {
 }
 const isDevelopment = process.env.NODE_ENV !== "production";
 const hostingURL = process.env.HOSTING_URL || "http://localhost:3000";
+
+const jwtSecretOrKey = process.env.JWT_SECRET;
 
 type Providers = "google" | "github";
 
@@ -40,8 +48,16 @@ const appConfig: AppConfig = {
   isDevelopment,
   hostingURL,
   getCredentialsForOAuthProvider,
-  getOAuthCallbackUrl
+  getOAuthCallbackUrl,
+  getJwtConfig: () => {
+    return {
+      keyOpts: {
+        issuer: "accounts.example.com",
+        audience: "example.com"
+      },
+      secretOrKey: jwtSecretOrKey
+    };
+  }
 };
 
-console.log(appConfig);
 export default appConfig;
