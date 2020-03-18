@@ -16,7 +16,10 @@ export interface AppConfig {
 const isDevelopment = process.env.NODE_ENV !== "production";
 const hostingURL = process.env.HOSTING_URL || "http://localhost:3000";
 
-const getOAuthCallbackUrl = (provider: string, host?: string) => {
+type Providers = 'google' | 'github';
+
+const getOAuthCallbackUrl = (provider: Providers, host?: string) => {
+  ...
   host = host || hostingURL;
   const callbackUrl = new URL(`/api/auth/callback/${provider}`, host);
   return callbackUrl.toString();
