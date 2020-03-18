@@ -52,6 +52,17 @@ const strategy = new Strategy(
     ...jwtOptions
   },
   function(payload, next) {
+    // payload is the extracted data from the JWT. next is a callback
+    // that is (error, result)
+
+    // here is where you can either search your database for a user or
+    // pass along the data that was extracted. Note that if you are
+    // hitting the database to find the user on each request then
+    // you are probably better off just using session.
+
+    // if you've reached this codeblock, then the JWT presented is valid
+    // and not expired.
+
     next(null, payload);
   }
 );
