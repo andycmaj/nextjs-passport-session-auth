@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     },
     (err, user, info) => {
       const token = sign({ sub: user.id }, { expiresIn: "2s" }).then(token => {
-        res.redirect(`/callback?token=${token}`);
+        res.redirect(`/auth/callback?token=${token}`);
       });
     }
   );
