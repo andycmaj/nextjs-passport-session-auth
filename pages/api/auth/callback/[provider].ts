@@ -1,19 +1,19 @@
-import { NextApiResponse, NextApiRequest } from 'next'
-import withPassport, { passport } from '../../../../lib/withPassport'
+import { NextApiResponse, NextApiRequest } from "next";
+import withPassport, { passport } from "../../../../lib/withPassport";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { provider } = req.query
+  const { provider } = req.query;
   if (!provider) {
-    return { statusCode: 404 }
+    return { statusCode: 404 };
   }
 
   passport.authenticate(provider, {
-    failureRedirect: '/auth',
-    successRedirect: '/',
+    failureRedirect: "/auth",
+    successRedirect: "/"
   })(req, res, (...args) => {
-    console.log('auth callback', args)
-    return true
-  })
-}
+    console.log("auth callback", args);
+    return true;
+  });
+};
 
-export default withPassport(handler)
+export default withPassport(handler);
