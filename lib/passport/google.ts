@@ -10,7 +10,6 @@ import appConfig from "../appConfig";
 // behalf, along with the user's profile.  The function must invoke `cb`
 // with a user object, which will be exposed in the request as `req.user`
 // in api handlers after authentication.
-console.log(appConfig.getCredentialsForOAuthProvider("google"));
 const strategy = new Strategy(
   {
     ...appConfig.getCredentialsForOAuthProvider("google"),
