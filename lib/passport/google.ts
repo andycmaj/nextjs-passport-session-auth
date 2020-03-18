@@ -24,8 +24,6 @@ const strategy = new Strategy({
     // which allows for account linking and authentication with other identity providers.
 
     // Upsert user here
-    console.log(accessToken, refreshToken, googleProfile)
-
     // see https://github.com/jaredhanson/passport-google-oauth2/blob/master/lib/strategy.js
     // for an example
     cb(null, googleProfile)
