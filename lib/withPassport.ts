@@ -6,8 +6,17 @@ import { github, google, jwt } from "./passport";
 import { UserIdentity } from "./withIdentity";
 export { default as passport } from "passport";
 
+export const sign = jwt.sign;
+
+declare module "next" {
+  export interface NextApiResponse {
+    redirect: (location: string) => void;
+  }
+}
+
 passport.use(github);
 passport.use(google);
+passport.use(jwt);
 
 // Configure Passport authenticated session persistence.
 
