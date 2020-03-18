@@ -1,4 +1,4 @@
-const { URL } = require("url");
+import { URL } from "url";
 
 export interface AppConfig {
   isDevelopment: boolean;
@@ -16,16 +16,18 @@ export interface AppConfig {
 const isDevelopment = process.env.NODE_ENV !== "production";
 const hostingURL = process.env.HOSTING_URL || "http://localhost:3000";
 
-const getOAuthCallbackUrl = (provider: string, host?: string) => {
+type Providers = "google" | "github";
+
+const getOAuthCallbackUrl = (provider: Providers, host?: string) => {
   host = host || hostingURL;
   const callbackUrl = new URL(`/api/auth/callback/${provider}`, host);
   return callbackUrl.toString();
 };
 
 const getCredentialsForOAuthProvider = (provider: string) => {
-  const prefix = provider.toUpperCase() + "_";
-  const clientID = process.env[prefix + "CLIENTID"];
-  const clientSecret = process.env[prefix + "CLIENTSECRET"];
+  const prefix = `${provider.toUpperCase()}_`;
+  const clientID = process.env[`${prefix}CLIENTID`];
+  const clientSecret = process.env[`${prefix}CLIENTSECRET`];
   if (!clientID)
     throw new Error(`${prefix}CLIENTID was not set in environment variables.`);
   if (!clientSecret)
