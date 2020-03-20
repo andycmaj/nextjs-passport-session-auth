@@ -76,3 +76,30 @@ export const sign = async (
   const signingOpts = { ...jwtOptions, ...opts };
   return await jwt.sign(payload, secretOrKey, signingOpts);
 };
+
+// the JWT payload can contain anything but for the purposes of this demo,
+// we are just returning the user id (string) or null. If you need more data
+// like roles, sub, aud, or whatever else then alter the return type accord
+
+// this also only checks the header for Auth Bearer (Authorization header
+// with the value of "Bearer JWT.TOKEN.VAL" where JWT.TOKEN.VAL is the token)
+// passport-jwt expects an Express Request which TypeScript was having issues
+// with. I may circle back around and address this but for now it works.
+
+// This is just a demo helper function that doesn't account for errors.
+
+export const extractFromRequest = (req: Request): string | null => {
+  const authHeader = req.headers.get("authorization")
+    ? req.headers.get("authorization")
+    : req.headers.get("Authorization");
+
+  if (authHeader.length && authHeader.indexOf("Bearer") > -1) {
+    const token = authHeader.replace("Bearer ", "").trim();
+    if (!token) return null;
+    const payload = jwt.verify(token, secretOrKey, jwtOptions);
+    if (payload && typeof payload === "object") {
+      return payload.sub;
+    }
+  }
+  return null;
+};
