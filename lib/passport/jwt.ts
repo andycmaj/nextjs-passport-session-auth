@@ -1,7 +1,9 @@
 import { Strategy, ExtractJwt } from "passport-jwt";
 import jwt from "jsonwebtoken";
 import appConfig from "../appConfig";
-
+import { NextApiRequest } from "next";
+import url, { UrlWithParsedQuery } from "url";
+import { ParsedUrlQuery } from "querystring";
 const { keyOpts, secretOrKey } = appConfig.getJwtConfig();
 //https://tools.ietf.org/html/rfc7519#section-4.1.3
 
@@ -37,23 +39,38 @@ const jwtOptions = {
   audience: keyOpts.audience
 };
 
+export const extractBearerFromHeader = (req: NextApiRequest): string | null => {
+  let authHeader = req.headers["authorization"]
+    ? req.headers["authorization"]
+    : req.headers["Authorization"];
+  if (typeof authHeader !== "string") {
+    authHeader = authHeader[0];
+  }
+  const parsed = (authHeader || "").match(/(\S+)\s+(\S+)/);
+  return parsed && parsed.length === 3 ? parsed[2] : null;
+};
+
+export const extractTokenFromUrlQueryParam = (queryParam: string) => (
+  req: NextApiRequest
+): string | null => {
+  const parsedUrl = url.parse(req.url, true);
+  return parsedUrl.query &&
+    Object.keys(parsedUrl.query).includes(queryParam) &&
+    parsedUrl.query[queryParam] &&
+    parsedUrl.query[queryParam].length
+    ? parsedUrl.query[queryParam].toString()
+    : null;
+};
+
 //http://www.passportjs.org/packages/passport-jwt/
 
-// Extracting the JWT from the request
-// There are a number of ways the JWT may be included in a request. In
-// order to remain as flexible as possible the JWT is parsed from the
-// request by a user-supplied callback passed in as the jwtFromRequest
-// parameter. This callback, from now on referred to as an extractor,
-// accepts a request object as an argument and returns the encoded JWT
-// string or null.
 const strategy = new Strategy(
   {
-    jwtFromRequest: ExtractJwt.fromExtractors([
-      ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ExtractJwt.fromUrlQueryParameter("auth")
-    ]),
-    secretOrKey: secretOrKey, // from appConfig.ts
-    ...jwtOptions
+    jwtFromRequest: [
+      extractBearerFromHeader,
+      extractTokenFromUrlQueryParam("auth")
+    ],
+    secretOrKey: secretOrKey // from appConfig.ts
   },
   function(payload, next) {
     // payload is the extracted data from the JWT. next is a callback
@@ -78,32 +95,4 @@ export const sign = (
 ): string => {
   opts = opts || {};
   return jwt.sign(payload, secretOrKey);
-};
-
-// the JWT payload can contain anything but for the purposes of this demo,
-// we are just returning the user id (string) or null. If you need more data
-// like roles, sub, aud, or whatever else then alter the return type accord
-
-// this also only checks the header for Auth Bearer (Authorization header
-// with the value of "Bearer JWT.TOKEN.VAL" where JWT.TOKEN.VAL is the token)
-// passport-jwt expects an Express Request which TypeScript was having issues
-// with. I may circle back around and address this but for now it works.
-
-// This is just a demo helper function that doesn't account for errors.
-
-export const extractFromRequest = (req: Request): string | null => {
-  const authHeader = req.headers.get("authorization")
-    ? req.headers.get("authorization")
-    : req.headers.get("Authorization");
-
-  if (authHeader.length && authHeader.indexOf("Bearer") > -1) {
-    const token = authHeader.replace("Bearer ", "").trim();
-    if (!token) return null;
-    console.log(jwtOptions);
-    const payload = jwt.verify(token, secretOrKey);
-    if (payload && typeof payload === "object") {
-      return payload.sub;
-    }
-  }
-  return null;
 };
