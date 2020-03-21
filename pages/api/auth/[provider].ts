@@ -1,7 +1,14 @@
-import { NextApiResponse, NextApiRequest } from "next";
+import {
+  NextWithPassportApiRequest,
+  NextApiResponseWithRedirectAndJwt
+} from "../../../lib/withPassport";
+
 import withPassport, { passport } from "../../../lib/withPassport";
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler = (
+  req: NextWithPassportApiRequest,
+  res: NextApiResponseWithRedirectAndJwt
+) => {
   const { provider } = req.query;
   if (!provider) {
     return { statusCode: 404 };

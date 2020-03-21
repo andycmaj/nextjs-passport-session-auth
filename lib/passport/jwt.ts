@@ -26,6 +26,10 @@ const { keyOpts, secretOrKey } = appConfig.getJwtConfig();
 //    The "iss" value is a case-sensitive string containing a StringOrURI
 //    value.  Use of this claim is OPTIONAL.
 
+// for some reason jwt was throwing an error when I supplied these. It may
+// be the domain of 'example.com' isn't valid or they can't match. not sure
+// i'll look into it later, I guess
+
 const jwtOptions = {
   // these were explicitly referenced so the documentation could be associated
   // within the context of the jwt strategy
@@ -68,13 +72,12 @@ const strategy = new Strategy(
 );
 export default strategy;
 
-export const sign = async (
+export const sign = (
   payload: string | object | Buffer,
   opts?: jwt.SignOptions
-): Promise<string> => {
+): string => {
   opts = opts || {};
-  const signingOpts = { ...jwtOptions, ...opts };
-  return await jwt.sign(payload, secretOrKey, signingOpts);
+  return jwt.sign(payload, secretOrKey);
 };
 
 // the JWT payload can contain anything but for the purposes of this demo,
@@ -96,7 +99,8 @@ export const extractFromRequest = (req: Request): string | null => {
   if (authHeader.length && authHeader.indexOf("Bearer") > -1) {
     const token = authHeader.replace("Bearer ", "").trim();
     if (!token) return null;
-    const payload = jwt.verify(token, secretOrKey, jwtOptions);
+    console.log(jwtOptions);
+    const payload = jwt.verify(token, secretOrKey);
     if (payload && typeof payload === "object") {
       return payload.sub;
     }

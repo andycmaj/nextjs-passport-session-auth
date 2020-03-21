@@ -4,21 +4,36 @@ import passport from "passport";
 import redirect from "micro-redirect";
 import { github, google, jwt } from "./passport";
 import { UserIdentity } from "./withIdentity";
-import { NextApiRequest } from "next";
+import { NextApiResponse, NextApiRequest } from "next";
 import { sign } from "./passport/jwt";
 export { default as passport } from "passport";
 
-declare module "next" {
-  export interface NextApiResponse {
-    redirect: (location: string) => void;
-    jwt: {
-      sign: (payload: object | string) => string;
-    };
-  }
-  export type NextPassportApiRequest = NextApiRequest & {
-    user: passport.Profile;
+// this is overriding Next's default API Response
+// NextApiResponse is a type, not an interface
+// I dont know if there is a way to properly extend
+// a type without making a new one?
+
+// declare module "next" {
+// export interface NextApiResponse {
+//   redirect: (location: string) => void;
+//   jwt: {
+//     sign: (payload: object | string) => string;
+//   };
+// }
+export type NextWithPassportApiRequest = NextApiRequest & {
+  user: passport.Profile;
+};
+
+// just adding this in for now. Name is horrific but
+// hopefully there's a way to extend the type.
+
+export type NextApiResponseWithRedirectAndJwt = NextApiResponse & {
+  redirect: (location: string) => void;
+  jwt: {
+    sign: (payload: object | string) => string;
   };
-}
+};
+// }
 
 passport.use(github);
 passport.use(google);

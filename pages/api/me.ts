@@ -1,11 +1,20 @@
-import { NextApiResponse, NextApiRequest, NextPassportApiRequest } from "next";
+import {
+  NextWithPassportApiRequest,
+  NextApiResponseWithRedirectAndJwt
+} from "../../lib/withPassport";
+
 import withPassport, { passport } from "../../lib/withPassport";
 import fakedb from "../../lib/fakedb";
+const handler = (
+  req: NextWithPassportApiRequest,
+  res: NextApiResponseWithRedirectAndJwt
+) => {
+  console.log("me");
+  console.log(req.headers);
 
-const handler = async (req: NextPassportApiRequest, res: NextApiResponse) => {
-  passport.authenticate("jwt", { session: false }, (err, userId, info) => {
+  passport.authenticate("jwt", { session: false })(req, res, (...args) => {
+    console.log("inside passport.authenticate");
     console.log(req.user);
-    return fakedb.findUserById(req.user.id);
   });
 };
 export default withPassport(handler);

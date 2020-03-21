@@ -24,12 +24,13 @@ const CallbackPage: NextPage<CallbackProps> = ({ user, token }) => {
     }
   }, [token]);
 
-  return <div></div>;
+  return <div>...</div>;
 };
 
 CallbackPage.getInitialProps = async ctx => {
   const failure = { isLoggedIn: false };
   try {
+    console.log("in getInitialProps for pages/auth/callback");
     const token = ctx.query.token;
     if (token) {
       const res = await fetch("http://localhost:3000/api/me", {

@@ -51,6 +51,7 @@ const AppProvider = ({ children }) => {
     if (typeof url === "string") {
       //TODO: Fix this
       url = new URL(url, "http://localhost:3000/api/").toString();
+      console.log(url);
     } else {
       throw new Error(
         "Implementation of RequestInfo in globalProvider#fetch is not done."
@@ -90,7 +91,7 @@ const AppProvider = ({ children }) => {
     console.log(`loginUser: user: ${user}`);
     if (!user) {
       console.log("no user data. fetching");
-      const { res, data } = await fetch("/me");
+      const { res, data } = await fetch("me");
       if (res.status === 200) {
         user = data.user;
         token = data.token;
