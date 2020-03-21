@@ -26,6 +26,11 @@ Set required environment variables. Use `.env.template` if you use a dotenv tool
 ```
 export GITHUB_CLIENTID=<your github app's client id>
 export GITHUB_CLIENTSECRET=<your github app's client secret>
+export GOOGLE_CLIENTID=<your googld app's client id>
+export GOOGLE_CLIENTSECRET=<your google app's client secret>
+export JWT_SECRET=<your jwt secret>
+
+
 ```
 
 Install it and run:

@@ -4,7 +4,7 @@ import Fetch from "isomorphic-fetch";
 import { useRouter } from "next/router";
 import { Profile as User } from "passport";
 
-interface AppState {
+export interface AppState {
   token: string | null;
   loggedIn: boolean;
   user: User | null;
