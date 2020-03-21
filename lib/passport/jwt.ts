@@ -2,8 +2,7 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import jwt from "jsonwebtoken";
 import appConfig from "../appConfig";
 import { NextApiRequest } from "next";
-import url, { UrlWithParsedQuery } from "url";
-import { ParsedUrlQuery } from "querystring";
+import url from "url";
 const { keyOpts, secretOrKey } = appConfig.getJwtConfig();
 //https://tools.ietf.org/html/rfc7519#section-4.1.3
 
@@ -15,10 +14,12 @@ const jwtOptions = {
 };
 
 export const extractBearerFromHeader = (req: NextApiRequest): string | null => {
+  console.log("extracting with bearer from header");
+  console.log(req.headers);
   let authHeader = req.headers["authorization"]
     ? req.headers["authorization"]
     : req.headers["Authorization"];
-  if (typeof authHeader !== "string") {
+  if (typeof authHeader !== "string" && authHeader) {
     authHeader = authHeader[0];
   }
   const parsed = (authHeader || "").match(/(\S+)\s+(\S+)/);
@@ -41,10 +42,10 @@ export const extractTokenFromUrlQueryParam = (queryParam: string) => (
 
 const strategy = new Strategy(
   {
-    jwtFromRequest: [
+    jwtFromRequest: ExtractJwt.fromExtractors([
       extractBearerFromHeader,
       extractTokenFromUrlQueryParam("auth")
-    ],
+    ]),
     secretOrKey: secretOrKey // from appConfig.ts
   },
   function(payload, next) {

@@ -21,7 +21,7 @@ export { default as passport } from "passport";
 //   };
 // }
 export type NextWithPassportApiRequest = NextApiRequest & {
-  user: passport.Profile;
+  user: string | passport.Profile;
 };
 
 // just adding this in for now. Name is horrific but

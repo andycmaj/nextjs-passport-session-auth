@@ -4,6 +4,7 @@ import {
 } from "../../../../lib/withPassport";
 
 import withPassport, { passport } from "../../../../lib/withPassport";
+import fakedb from "../../../../lib/fakedb";
 
 const handler = async (
   req: NextWithPassportApiRequest,
@@ -14,8 +15,12 @@ const handler = async (
     return { statusCode: 404 };
   }
   passport.authenticate(provider, { session: false })(req, res, (...args) => {
-    console.log("in passport.authenticate callback");
-    const token = res.jwt.sign(req.user.id);
+    // this check isn't needed. req.user will be the passport.Profile from the provder
+    // the typing needs work.
+    const user =
+      typeof req.user === "string" ? fakedb.findUserById(req.user) : req.user;
+
+    const token = res.jwt.sign(user.id);
     console.log(token);
     res.redirect(`/auth/callback?token=${token}`);
   });

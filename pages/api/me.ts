@@ -13,8 +13,12 @@ const handler = (
   console.log(req.headers);
 
   passport.authenticate("jwt", { session: false })(req, res, (...args) => {
-    console.log("inside passport.authenticate");
+    console.log("req.user:");
     console.log(req.user);
+    res.send({
+      user: fakedb.findUserById(req.user as string),
+      token: res.jwt.sign(req.user)
+    });
   });
 };
 export default withPassport(handler);

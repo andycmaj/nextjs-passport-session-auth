@@ -2,7 +2,7 @@ import { createContext, useReducer, useEffect } from "react";
 import AuthReducer, { AuthAction } from "./authReducer";
 import Fetch from "isomorphic-fetch";
 import { useRouter } from "next/router";
-import { User } from "../lib/users";
+import { Profile as User } from "passport";
 
 interface AppState {
   token: string | null;
@@ -51,7 +51,6 @@ const AppProvider = ({ children }) => {
     if (typeof url === "string") {
       //TODO: Fix this
       url = new URL(url, "http://localhost:3000/api/").toString();
-      console.log(url);
     } else {
       throw new Error(
         "Implementation of RequestInfo in globalProvider#fetch is not done."
