@@ -1,6 +1,6 @@
 import { Strategy, Profile } from "passport-github";
 import appConfig from "../appConfig";
-
+import fakedb from "../fakedb";
 // STATICALLY configure the Github strategy for use by Passport.
 //
 // OAuth 2.0-based strategies require a `verify` function which receives the
@@ -23,12 +23,14 @@ const strategy = new Strategy(
     // which allows for account linking and authentication with other identity providers.
 
     // Upsert user here
-    console.log(accessToken, refreshToken, githubProfile);
+    // console.log(accessToken, refreshToken, githubProfile);
 
     // see https://github.com/jaredhanson/passport-github/blob/master/lib/strategy.js#L40
     // see https://gitlab.com/andycunn/canvass/blob/f3f03859b3de66f30d7703a4c5d2f44f7c724f67/api/app.js#L118
     // for an example
-    cb(null, githubProfile);
+
+    const user = fakedb.addOrUpdateUser(githubProfile);
+    cb(null, user);
   }
 );
 

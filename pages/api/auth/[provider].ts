@@ -8,7 +8,8 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   passport.authenticate(provider, { session: false })(req, res, (...args) => {
-    console.log("passport authenticated", args);
+    console.log("api/auth/[provider]");
+    return req.user;
   });
 };
 

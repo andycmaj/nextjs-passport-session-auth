@@ -1,18 +1,8 @@
-import { createContext, useReducer, useEffect, Context } from "react";
+import { createContext, useReducer, useEffect } from "react";
 import AuthReducer, { AuthAction } from "./authReducer";
 import Fetch from "isomorphic-fetch";
 import { useRouter } from "next/router";
-
-interface User {
-  name: {
-    givenName: string;
-    middleName?: string;
-    familyName: string;
-  };
-  locale?: string;
-  emails: string[];
-  picture?: string;
-}
+import { User } from "../lib/users";
 
 interface AppState {
   token: string | null;

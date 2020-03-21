@@ -1,12 +1,17 @@
-import App from 'next/app'
-import React from 'react'
-import withIdentity from '../lib/withIdentity'
+import App from "next/app";
+import React from "react";
+import AppProvider from "../context/AppProvider";
 
 class MyApp extends App {
   render() {
-    const { Component, pageProps } = this.props
-    return <Component {...pageProps} />
+    const { Component, pageProps } = this.props;
+    return (
+      <AppProvider>
+        <Component {...pageProps} />
+      </AppProvider>
+    );
   }
 }
 
-export default withIdentity(MyApp)
+export default MyApp;
+//export default withIdentity(MyApp)

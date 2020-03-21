@@ -1,17 +1,23 @@
 import passport from "passport";
-import cookieSession from "cookie-session";
-import url from "url";
+// import cookieSession from "cookie-session";
+// import url from "url";
 import redirect from "micro-redirect";
 import { github, google, jwt } from "./passport";
 import { UserIdentity } from "./withIdentity";
+import { NextApiRequest } from "next";
+import { sign } from "./passport/jwt";
 export { default as passport } from "passport";
-
-export const sign = jwt.sign;
 
 declare module "next" {
   export interface NextApiResponse {
     redirect: (location: string) => void;
+    jwt: {
+      sign: (payload: object | string) => string;
+    };
   }
+  export type NextPassportApiRequest = NextApiRequest & {
+    user: passport.Profile;
+  };
 }
 
 passport.use(github);
@@ -45,12 +51,12 @@ export default fn => (req, res) => {
     // as it is in express. https://expressjs.com/en/api.html#res.redirect
     res.redirect = (location: string) => redirect(res, 302, location);
   }
-  passport.initialize()(req, res, () =>
-    passport.session()(req, res, () =>
-      // call wrapped api route as innermost handler
-      fn(req, res)
-    )
-  );
+
+  if (!res.jwt || !res.jwt.sign) {
+    res.jwt = { sign };
+  }
+  passport.initialize()(req, res, () => fn(req, res));
+
   // Initialize Passport and restore authentication state, if any, from the
   // session. This nesting of middleware handlers basically does what app.use(passport.initialize())
   // does in express.
