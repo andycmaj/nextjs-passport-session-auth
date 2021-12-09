@@ -16,7 +16,7 @@
     "micro-compose": "^0.0.3",
     "micro-cookie": "^1.2.0",
     "micro-redirect": "^1.0.0",
-    "next": "^9.0.6",
+    "next": "^11.1.3",
     "next-cookies": "^1.1.3",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
